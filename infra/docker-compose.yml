@@ -6,7 +6,6 @@ services:
         build:
             context: ./php
         environment:
-            - APP_ENV=${APP_ENV}
             - APP_SECRET=${APP_SECRET}
         volumes:
             - ${APP_FOLDER}:/var/www
