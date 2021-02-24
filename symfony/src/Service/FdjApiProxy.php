@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -8,10 +9,11 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class FdjApiProxy
 {
-    private const EURO_MILLIONS_RESULTS_URI = '/api/service-draws/v1/games/euromillions/draws?include=results,addons&range=0-0';
+    public const EURO_MILLIONS_RESULTS_URI = '/api/service-draws/v1/games/euromillions/draws?include=results,addons&range=0-0';
 
     public function __construct(
         private HttpClientInterface $fdjApiClient,
+        private LoggerInterface $logger,
     ) {}
 
     public function getEuroMillionsResults(): array
@@ -22,7 +24,10 @@ class FdjApiProxy
         );
 
         if (Response::HTTP_OK !== $response->getStatusCode()) {
-            throw new HttpException('An error occurred when trying to call FDJ Api.');
+            $message = 'An error occurred when trying to call FDJ Api.';
+            $this->logger->error($message);
+
+            throw new HttpException($response->getStatusCode(), $message);
         }
 
         return $response->toArray();

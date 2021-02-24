@@ -4,8 +4,10 @@ namespace App\Controller;
 use App\Service\FdjApiProxy;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class EuroMillionsController extends AbstractController
 {
@@ -13,17 +15,25 @@ class EuroMillionsController extends AbstractController
 
     public function __construct(
         private FdjApiProxy $fdjApiProxy,
-        private SerializerInterface $serializer,
+        private NormalizerInterface $normalizer,
     ) {}
 
-    #[Route('/euro-millions/results', name: 'action')]
+    #[Route(
+        '/euro-millions/results',
+        name: 'action',
+        methods: ['GET']
+    )]
     public function resultsAction(): Response
     {
-        $result = $this->fdjApiProxy->getEuroMillionsResults();
+        try {
+            $result = $this->fdjApiProxy->getEuroMillionsResults();
+        } catch (HttpException $e) {
+            throw new BadRequestHttpException("An error occurred, please try again later.");
+        }
 
         return $this->render(
             'euro-millions/results.html.twig',
-            $this->serializer->normalize($result, self::DATA_FORMAT)
+            $this->normalizer->normalize($result, self::DATA_FORMAT)
         );
     }
 }
