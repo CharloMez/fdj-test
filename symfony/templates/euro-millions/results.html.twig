@@ -3,13 +3,17 @@
 {% block body %}
     <h1>Résultats EuroMillions - My Million</h1>
     <p>Tirage du {{ drawn_at | default | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+
+    <h2>Numéros gagnant:</h2>
     {% for number in numbers %}
         <p>{{ number }}</p>
     {% endfor %}
 
+    <h2>Numéros spéciaux:</h2>
     {% for special in specials %}
         <p>{{ special }}</p>
     {% endfor %}
 
+    <h2>Code grille:</h2>
     <p>{{ addons }}</p>
 {% endblock %}
