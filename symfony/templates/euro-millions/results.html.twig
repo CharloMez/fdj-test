@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Résultats EuroMillions - My Million</h1>
+    <p>Tirage du {{ drawn_at | default | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+    {% for number in numbers %}
+        <p>{{ number }}</p>
+    {% endfor %}
+
+    {% for special in specials %}
+        <p>{{ special }}</p>
+    {% endfor %}
+
+    <p>{{ addons }}</p>
+{% endblock %}
