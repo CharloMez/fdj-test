@@ -15,3 +15,10 @@ framework:
     #fragments: true
     php_errors:
         log: true
+
+    http_client:
+        default_options:
+            http_version: '2.0'
+        scoped_clients:
+            fdj:
+                base_uri: '%env(FDJ_DOMAIN)%'
